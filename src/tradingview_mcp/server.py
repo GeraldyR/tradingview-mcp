@@ -16,6 +16,7 @@ import os
 from typing import Optional
 
 from mcp.server.fastmcp import FastMCP
+from mcp.server.transport_security import TransportSecuritySettings
 from starlette.responses import JSONResponse
 from starlette.routing import Route
 
@@ -111,6 +112,15 @@ mcp = FastMCP(
         "Tools: top_gainers, top_losers, bollinger_scan, coin_analysis, multi_agent_analysis, "
         "volume_breakout_scanner, futures_market_overview, futures_top_movers, "
         "futures_category_snapshot, futures_watchlist, egx_market_overview, and more."
+    ),
+    transport_security=TransportSecuritySettings(
+        enable_dns_rebinding_protection=True,
+        allowed_hosts=[
+            "hermes-gateway",
+            "127.0.0.1",
+            "localhost",
+            "0.0.0.0",
+        ],
     ),
 )
 
