@@ -16,6 +16,8 @@ import os
 from typing import Optional
 
 from mcp.server.fastmcp import FastMCP
+from starlette.responses import JSONResponse
+from starlette.routing import Route
 
 # ── Service imports ────────────────────────────────────────────────────────────
 from tradingview_mcp.core.services.coinlist import load_symbols
@@ -1067,6 +1069,12 @@ def exchanges_list() -> str:
     return "Common exchanges: KUCOIN, BINANCE, BYBIT, MEXC, BITGET, OKX, COINBASE, GATEIO, HUOBI, BITFINEX, KRAKEN, BITSTAMP, BIST, EGX, NASDAQ, TWSE, TPEX"
 
 
+# ── Health endpoint ────────────────────────────────────────────────────────────
+
+async def _health(_request):
+    return JSONResponse({"status": "ok"})
+
+
 # ── Entry point ────────────────────────────────────────────────────────────────
 
 def main() -> None:
@@ -1089,12 +1097,10 @@ def main() -> None:
     if args.transport == "stdio":
         mcp.run()
     else:
-        try:
-            mcp.settings.host = args.host
-            mcp.settings.port = args.port
-        except Exception:
-            pass
-        mcp.run(transport="streamable-http")
+        import uvicorn
+        app = mcp.streamable_http_app()
+        app.router.routes.append(Route("/health", endpoint=_health, methods=["GET"]))
+        uvicorn.run(app, host=args.host, port=args.port)
 
 
 if __name__ == "__main__":
