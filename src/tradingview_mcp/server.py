@@ -116,7 +116,8 @@ mcp = FastMCP(
     transport_security=TransportSecuritySettings(
         enable_dns_rebinding_protection=True,
         allowed_hosts=[
-            "hermes-gateway",
+            "tradingview-app-slinox",
+            "tradingview-app-slinox:8000",
             "127.0.0.1",
             "localhost",
             "0.0.0.0",
